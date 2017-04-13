@@ -1,5 +1,6 @@
 import random
 import pandas as pd
+import numpy as np
 df1 = pd.read_csv('train.csv')
 df2 = pd.read_csv('train.csv')
 df3 = pd.read_csv('train.csv')
@@ -8,8 +9,8 @@ df5 = pd.read_csv('train.csv')
 for i in range(0,1):
         for k in range (1,5):
             x = 0
+            # Create Pre-Flop round
             if k == 1:
-                #Create Pre-Flop round
                 df1.loc[i * 4 + k-1] = -1
                 df2.loc[i * 4 + k-1] = -1
                 df3.loc[i * 4 + k - 1] = -1
@@ -258,8 +259,9 @@ for i in range(0,1):
                          df4.iloc[i * 4 + k - 1, 14] = 1
                      if df5.iloc[i * 4 + k - 1, 1] == winner or df5.iloc[i * 4 + k - 1, 3] == winner:
                          df5.iloc[i * 4 + k - 1, 14] = 1
+
+            # Create Flop Round
             if k == 2:
-                #Create Flop Round
                 df1.loc[i * 4 + k-1] = df1.loc[i * 4 + k - 2]
                 df2.loc[i * 4 + k - 1] = df2.loc[i * 4 + k - 2]
                 df3.loc[i * 4 + k - 1] = df3.loc[i * 4 + k - 2]
@@ -371,23 +373,1230 @@ for i in range(0,1):
                         continue
                     else:
                         x = 1
-            #Flop hand evaluation
-            x = 0
-            list = []
-            df1.iloc[i * 4 + k - 1, 14] = 0
-            df2.iloc[i * 4 + k - 1, 14] = 0
-            df3.iloc[i * 4 + k - 1, 14] = 0
-            df4.iloc[i * 4 + k - 1, 14] = 0
-            df5.iloc[i * 4 + k - 1, 14] = 0
-            #Straight Flush Evaluation
-            #if df1.iloc[i * 4 + k - 1, 8]:
+                #Flop hand evaluation
+                x = 0
+                list = [-1,-1,-1,-1,-1]
+                df1.iloc[i * 4 + k - 1, 14] = 0
+                df2.iloc[i * 4 + k - 1, 14] = 0
+                df3.iloc[i * 4 + k - 1, 14] = 0
+                df4.iloc[i * 4 + k - 1, 14] = 0
+                df5.iloc[i * 4 + k - 1, 14] = 0
+                #Straight Flush Evaluation
+                SF = 0
+                a1 = 0
+                a2 = 0
+                a3 = 0
+                a4 = 0
+                a5 = 0
+                #P1 Evaluation
+                #With Ace Low
+                list[0] = df1.iloc[i * 4 + k - 1, 1]
+                list[1] = df1.iloc[i * 4 + k - 1, 3]
+                list[2] = df1.iloc[i * 4 + k - 1, 5]
+                list[3] = df1.iloc[i * 4 + k - 1, 7]
+                list[4] = df1.iloc[i * 4 + k - 1, 9]
+                for m in range (0,5):
+                    if list[m] == 14:
+                        list[m] = 1
+                list = np.sort(list).tolist()
+                if list[0]+1 == list[1] and list[1]+1 == list[2] and list[2]+1 == list[3] and list[3]+1 == list[4]:
+                    a1 = max(list[0],list[1],list[2],list[3],list[4])
+                    list[0] = df1.iloc[i * 4 + k - 1, 0]
+                    list[1] = df1.iloc[i * 4 + k - 1, 2]
+                    list[2] = df1.iloc[i * 4 + k - 1, 4]
+                    list[3] = df1.iloc[i * 4 + k - 1, 6]
+                    list[4] = df1.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a1 = 0
+                # With Ace High
+                list[0] = df1.iloc[i * 4 + k - 1, 1]
+                list[1] = df1.iloc[i * 4 + k - 1, 3]
+                list[2] = df1.iloc[i * 4 + k - 1, 5]
+                list[3] = df1.iloc[i * 4 + k - 1, 7]
+                list[4] = df1.iloc[i * 4 + k - 1, 9]
+                list = np.sort(list).tolist()
+                if list[0]+1 == list[1] and list[1]+1 == list[2] and list[2]+1 == list[3] and list[3]+1 == list[4]:
+                    a1 = max(list[0],list[1],list[2],list[3],list[4])
+                    list[0] = df1.iloc[i * 4 + k - 1, 0]
+                    list[1] = df1.iloc[i * 4 + k - 1, 2]
+                    list[2] = df1.iloc[i * 4 + k - 1, 4]
+                    list[3] = df1.iloc[i * 4 + k - 1, 6]
+                    list[4] = df1.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a1 = 0
+                #P2 Evaluation
+                #With Ace Low
+                list[0] = df2.iloc[i * 4 + k - 1, 1]
+                list[1] = df2.iloc[i * 4 + k - 1, 3]
+                list[2] = df2.iloc[i * 4 + k - 1, 5]
+                list[3] = df2.iloc[i * 4 + k - 1, 7]
+                list[4] = df2.iloc[i * 4 + k - 1, 9]
+                for m in range(0, 5):
+                    if list[m] == 14:
+                        list[m] = 1
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == list[
+                    4]:
+                    a2 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df2.iloc[i * 4 + k - 1, 0]
+                    list[1] = df2.iloc[i * 4 + k - 1, 2]
+                    list[2] = df2.iloc[i * 4 + k - 1, 4]
+                    list[3] = df2.iloc[i * 4 + k - 1, 6]
+                    list[4] = df2.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a2 = 0
+                #With Ace High
+                list[0] = df2.iloc[i * 4 + k - 1, 1]
+                list[1] = df2.iloc[i * 4 + k - 1, 3]
+                list[2] = df2.iloc[i * 4 + k - 1, 5]
+                list[3] = df2.iloc[i * 4 + k - 1, 7]
+                list[4] = df2.iloc[i * 4 + k - 1, 9]
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == list[4]:
+                    a2 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df2.iloc[i * 4 + k - 1, 0]
+                    list[1] = df2.iloc[i * 4 + k - 1, 2]
+                    list[2] = df2.iloc[i * 4 + k - 1, 4]
+                    list[3] = df2.iloc[i * 4 + k - 1, 6]
+                    list[4] = df2.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a2 = 0
+                # P3 Evaluation
+                # With Ace Low
+                list[0] = df3.iloc[i * 4 + k - 1, 1]
+                list[1] = df3.iloc[i * 4 + k - 1, 3]
+                list[2] = df3.iloc[i * 4 + k - 1, 5]
+                list[3] = df3.iloc[i * 4 + k - 1, 7]
+                list[4] = df3.iloc[i * 4 + k - 1, 9]
+                for m in range(0, 5):
+                    if list[m] == 14:
+                        list[m] = 1
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == \
+                        list[
+                            4]:
+                    a3 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df3.iloc[i * 4 + k - 1, 0]
+                    list[1] = df3.iloc[i * 4 + k - 1, 2]
+                    list[2] = df3.iloc[i * 4 + k - 1, 4]
+                    list[3] = df3.iloc[i * 4 + k - 1, 6]
+                    list[4] = df3.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a3 = 0
+                #With Ace High
+                list[0] = df3.iloc[i * 4 + k - 1, 1]
+                list[1] = df3.iloc[i * 4 + k - 1, 3]
+                list[2] = df3.iloc[i * 4 + k - 1, 5]
+                list[3] = df3.iloc[i * 4 + k - 1, 7]
+                list[4] = df3.iloc[i * 4 + k - 1, 9]
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == list[4]:
+                    a3 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df3.iloc[i * 4 + k - 1, 0]
+                    list[1] = df3.iloc[i * 4 + k - 1, 2]
+                    list[2] = df3.iloc[i * 4 + k - 1, 4]
+                    list[3] = df3.iloc[i * 4 + k - 1, 6]
+                    list[4] = df3.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a3 = 0
+                # P4 Evaluation
+                # With Ace Low
+                list[0] = df4.iloc[i * 4 + k - 1, 1]
+                list[1] = df4.iloc[i * 4 + k - 1, 3]
+                list[2] = df4.iloc[i * 4 + k - 1, 5]
+                list[3] = df4.iloc[i * 4 + k - 1, 7]
+                list[4] = df4.iloc[i * 4 + k - 1, 9]
+                for m in range(0, 5):
+                    if list[m] == 14:
+                        list[m] = 1
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == \
+                        list[4]:
+                    a4 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df4.iloc[i * 4 + k - 1, 0]
+                    list[1] = df4.iloc[i * 4 + k - 1, 2]
+                    list[2] = df4.iloc[i * 4 + k - 1, 4]
+                    list[3] = df4.iloc[i * 4 + k - 1, 6]
+                    list[4] = df4.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a4 = 0
+                #With Ace High
+                list[0] = df4.iloc[i * 4 + k - 1, 1]
+                list[1] = df4.iloc[i * 4 + k - 1, 3]
+                list[2] = df4.iloc[i * 4 + k - 1, 5]
+                list[3] = df4.iloc[i * 4 + k - 1, 7]
+                list[4] = df4.iloc[i * 4 + k - 1, 9]
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == list[4]:
+                    a4 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df4.iloc[i * 4 + k - 1, 0]
+                    list[1] = df4.iloc[i * 4 + k - 1, 2]
+                    list[2] = df4.iloc[i * 4 + k - 1, 4]
+                    list[3] = df4.iloc[i * 4 + k - 1, 6]
+                    list[4] = df4.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a4 = 0
+                # P5 Evaluation
+                # With Ace Low
+                list[0] = df5.iloc[i * 4 + k - 1, 1]
+                list[1] = df5.iloc[i * 4 + k - 1, 3]
+                list[2] = df5.iloc[i * 4 + k - 1, 5]
+                list[3] = df5.iloc[i * 4 + k - 1, 7]
+                list[4] = df5.iloc[i * 4 + k - 1, 9]
+                for m in range(0, 5):
+                    if list[m] == 14:
+                        list[m] = 1
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == \
+                        list[4]:
+                    a5 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df5.iloc[i * 4 + k - 1, 0]
+                    list[1] = df5.iloc[i * 4 + k - 1, 2]
+                    list[2] = df5.iloc[i * 4 + k - 1, 4]
+                    list[3] = df5.iloc[i * 4 + k - 1, 6]
+                    list[4] = df5.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a5 = 0
+                #With Ace High
+                list[0] = df5.iloc[i * 4 + k - 1, 1]
+                list[1] = df5.iloc[i * 4 + k - 1, 3]
+                list[2] = df5.iloc[i * 4 + k - 1, 5]
+                list[3] = df5.iloc[i * 4 + k - 1, 7]
+                list[4] = df5.iloc[i * 4 + k - 1, 9]
+                list = np.sort(list).tolist()
+                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and list[3] + 1 == list[4]:
+                    a5 = max(list[0], list[1], list[2], list[3], list[4])
+                    list[0] = df5.iloc[i * 4 + k - 1, 0]
+                    list[1] = df5.iloc[i * 4 + k - 1, 2]
+                    list[2] = df5.iloc[i * 4 + k - 1, 4]
+                    list[3] = df5.iloc[i * 4 + k - 1, 6]
+                    list[4] = df5.iloc[i * 4 + k - 1, 8]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                        SF = SF + 1
+                    else:
+                        a5 = 0
+                #Check for Straight flush
+                if (SF > 0):
+                    b = max(a1,a2,a3,a4,a5)
+                    if a1 == b:
+                        df1.iloc[i * 4 + k - 1, 14] = 1
+                    if a2 == b:
+                        df2.iloc[i * 4 + k - 1, 14] = 1
+                    if a3 == b:
+                        df3.iloc[i * 4 + k - 1, 14] = 1
+                    if a4 == b:
+                        df4.iloc[i * 4 + k - 1, 14] = 1
+                    if a5 == b:
+                        df5.iloc[i * 4 + k - 1, 14] = 1
+                else:
+                    # Check for four of a kind
+                    FK = 0
+                    a1 = 0
+                    a2 = 0
+                    a3 = 0
+                    a4 = 0
+                    a5 = 0
+                    #Evaluate for P1
+                    list[0] = df1.iloc[i * 4 + k - 1, 1]
+                    list[1] = df1.iloc[i * 4 + k - 1, 3]
+                    list[2] = df1.iloc[i * 4 + k - 1, 5]
+                    list[3] = df1.iloc[i * 4 + k - 1, 7]
+                    list[4] = df1.iloc[i * 4 + k - 1, 9]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[4] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[0] == list[4] and list[4] == list[2] and list[2] == list[3] \
+                        or list[0] == list[1] and list[1] == list[4] and list[4] == list[3] \
+                        or list[0] == list[1] and list[1] == list[2] and list[2] == list[4]:
+                        FK = FK + 1
+                        a1 = list[0]
+                    #Evaluate for P2
+                    list[0] = df2.iloc[i * 4 + k - 1, 1]
+                    list[1] = df2.iloc[i * 4 + k - 1, 3]
+                    list[2] = df2.iloc[i * 4 + k - 1, 5]
+                    list[3] = df2.iloc[i * 4 + k - 1, 7]
+                    list[4] = df2.iloc[i * 4 + k - 1, 9]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[4] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[0] == list[4] and list[4] == list[2] and list[2] == list[3] \
+                        or list[0] == list[1] and list[1] == list[4] and list[4] == list[3] \
+                        or list[0] == list[1] and list[1] == list[2] and list[2] == list[4]:
+                        FK = FK + 1
+                        a2 = list[0]
+                    #Evaluate for P3
+                    list[0] = df3.iloc[i * 4 + k - 1, 1]
+                    list[1] = df3.iloc[i * 4 + k - 1, 3]
+                    list[2] = df3.iloc[i * 4 + k - 1, 5]
+                    list[3] = df3.iloc[i * 4 + k - 1, 7]
+                    list[4] = df3.iloc[i * 4 + k - 1, 9]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[4] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[0] == list[4] and list[4] == list[2] and list[2] == list[3] \
+                        or list[0] == list[1] and list[1] == list[4] and list[4] == list[3] \
+                        or list[0] == list[1] and list[1] == list[2] and list[2] == list[4]:
+                        FK = FK + 1
+                        a3 = list[0]
+                    #Evaluate for P4
+                    list[0] = df4.iloc[i * 4 + k - 1, 1]
+                    list[1] = df4.iloc[i * 4 + k - 1, 3]
+                    list[2] = df4.iloc[i * 4 + k - 1, 5]
+                    list[3] = df4.iloc[i * 4 + k - 1, 7]
+                    list[4] = df4.iloc[i * 4 + k - 1, 9]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[4] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[0] == list[4] and list[4] == list[2] and list[2] == list[3] \
+                        or list[0] == list[1] and list[1] == list[4] and list[4] == list[3] \
+                        or list[0] == list[1] and list[1] == list[2] and list[2] == list[4]:
+                        FK = FK + 1
+                        a4 = list[0]
+                    #Evaluate for P5
+                    list[0] = df5.iloc[i * 4 + k - 1, 1]
+                    list[1] = df5.iloc[i * 4 + k - 1, 3]
+                    list[2] = df5.iloc[i * 4 + k - 1, 5]
+                    list[3] = df5.iloc[i * 4 + k - 1, 7]
+                    list[4] = df5.iloc[i * 4 + k - 1, 9]
+                    if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[4] == list[1] and list[1] == list[2] and list[2] == list[3] \
+                        or list[0] == list[4] and list[4] == list[2] and list[2] == list[3] \
+                        or list[0] == list[1] and list[1] == list[4] and list[4] == list[3] \
+                        or list[0] == list[1] and list[1] == list[2] and list[2] == list[4]:
+                        FK = FK + 1
+                        a5 = list[0]
+                    #Checking for Four of a kind
+                    if(FK > 0):
+                        b = max(a1, a2, a3, a4, a5)
+                        if a1 == b:
+                            df1.iloc[i * 4 + k - 1, 14] = 1
+                        if a2 == b:
+                            df2.iloc[i * 4 + k - 1, 14] = 1
+                        if a3 == b:
+                            df3.iloc[i * 4 + k - 1, 14] = 1
+                        if a4 == b:
+                            df4.iloc[i * 4 + k - 1, 14] = 1
+                        if a5 == b:
+                            df5.iloc[i * 4 + k - 1, 14] = 1
+                    else:
+                        #Check for full house
+                        FH = 0
+                        a1i = 0
+                        a1ii = 0
+                        a2i = 0
+                        a2ii = 0
+                        a3i = 0
+                        a3ii = 0
+                        a4i = 0
+                        a4ii = 0
+                        a5i = 0
+                        a5ii = 0
+                        # Evaluate for P1
+                        list[0] = df1.iloc[i * 4 + k - 1, 1]
+                        list[1] = df1.iloc[i * 4 + k - 1, 3]
+                        list[2] = df1.iloc[i * 4 + k - 1, 5]
+                        list[3] = df1.iloc[i * 4 + k - 1, 7]
+                        list[4] = df1.iloc[i * 4 + k - 1, 9]
+                        if list[0] == list[1] and list[1] == list[2] and list[3] == list[4]:
+                            a1i = list[0]
+                            a1ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[3] and list[2] == list[4]:
+                            a1i = list[0]
+                            a1ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[4] and list[3] == list[2]:
+                            a1i = list[0]
+                            a1ii = list[2]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[2] and list[1] == list[4]:
+                            a1i = list[0]
+                            a1ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[4] and list[4] == list[2] and list[3] == list[1]:
+                            a1i = list[0]
+                            a1ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[2] and list[0] == list[4]:
+                            a1i = list[3]
+                            a1ii = list[4]
+                            FH = FH + 1
+                        elif list[4] == list[1] and list[1] == list[2] and list[3] == list[0]:
+                            a1i = list[4]
+                            a1ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[4] and list[1] == list[2]:
+                            a1i = list[0]
+                            a1ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[4] and list[2] == list[0]:
+                            a1i = list[3]
+                            a1ii = list[2]
+                            FH = FH + 1
+                        elif list[3] == list[4] and list[4] == list[2] and list[0] == list[1]:
+                            a1i = list[3]
+                            a1ii = list[1]
+                            FH = FH + 1
+                        # Evaluate for P2
+                        list[0] = df2.iloc[i * 4 + k - 1, 1]
+                        list[1] = df2.iloc[i * 4 + k - 1, 3]
+                        list[2] = df2.iloc[i * 4 + k - 1, 5]
+                        list[3] = df2.iloc[i * 4 + k - 1, 7]
+                        list[4] = df2.iloc[i * 4 + k - 1, 9]
+                        if list[0] == list[1] and list[1] == list[2] and list[3] == list[4]:
+                            a2i = list[0]
+                            a2ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[3] and list[2] == list[4]:
+                            a2i = list[0]
+                            a2ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[4] and list[3] == list[2]:
+                            a2i = list[0]
+                            a2ii = list[2]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[2] and list[1] == list[4]:
+                            a2i = list[0]
+                            a2ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[4] and list[4] == list[2] and list[3] == list[1]:
+                            a2i = list[0]
+                            a2ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[2] and list[0] == list[4]:
+                            a2i = list[3]
+                            a2ii = list[4]
+                            FH = FH + 1
+                        elif list[4] == list[1] and list[1] == list[2] and list[3] == list[0]:
+                            a2i = list[4]
+                            a2ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[4] and list[1] == list[2]:
+                            a2i = list[0]
+                            a2ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[4] and list[2] == list[0]:
+                            a2i = list[3]
+                            a2ii = list[2]
+                            FH = FH + 1
+                        elif list[3] == list[4] and list[4] == list[2] and list[0] == list[1]:
+                            a2i = list[3]
+                            a2ii = list[1]
+                            FH = FH + 1
+                        # Evaluate for P3
+                        list[0] = df3.iloc[i * 4 + k - 1, 1]
+                        list[1] = df3.iloc[i * 4 + k - 1, 3]
+                        list[2] = df3.iloc[i * 4 + k - 1, 5]
+                        list[3] = df3.iloc[i * 4 + k - 1, 7]
+                        list[4] = df3.iloc[i * 4 + k - 1, 9]
+                        if list[0] == list[1] and list[1] == list[2] and list[3] == list[4]:
+                            a3i = list[0]
+                            a3ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[3] and list[2] == list[4]:
+                            a3i = list[0]
+                            a3ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[4] and list[3] == list[2]:
+                            a3i = list[0]
+                            a3ii = list[2]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[2] and list[1] == list[4]:
+                            a3i = list[0]
+                            a3ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[4] and list[4] == list[2] and list[3] == list[1]:
+                            a3i = list[0]
+                            a3ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[2] and list[0] == list[4]:
+                            a3i = list[3]
+                            a3ii = list[4]
+                            FH = FH + 1
+                        elif list[4] == list[1] and list[1] == list[2] and list[3] == list[0]:
+                            a3i = list[4]
+                            a3ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[4] and list[1] == list[2]:
+                            a3i = list[0]
+                            a3ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[4] and list[2] == list[0]:
+                            a3i = list[3]
+                            a3ii = list[2]
+                            FH = FH + 1
+                        elif list[3] == list[4] and list[4] == list[2] and list[0] == list[1]:
+                            a3i = list[3]
+                            a3ii = list[1]
+                            FH = FH + 1
+                        # Evaluate for P4
+                        list[0] = df4.iloc[i * 4 + k - 1, 1]
+                        list[1] = df4.iloc[i * 4 + k - 1, 3]
+                        list[2] = df4.iloc[i * 4 + k - 1, 5]
+                        list[3] = df4.iloc[i * 4 + k - 1, 7]
+                        list[4] = df4.iloc[i * 4 + k - 1, 9]
+                        if list[0] == list[1] and list[1] == list[2] and list[3] == list[4]:
+                            a4i = list[0]
+                            a4ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[3] and list[2] == list[4]:
+                            a4i = list[0]
+                            a4ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[4] and list[3] == list[2]:
+                            a4i = list[0]
+                            a4ii = list[2]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[2] and list[1] == list[4]:
+                            a4i = list[0]
+                            a4ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[4] and list[4] == list[2] and list[3] == list[1]:
+                            a4i = list[0]
+                            a4ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[2] and list[0] == list[4]:
+                            a4i = list[3]
+                            a4ii = list[4]
+                            FH = FH + 1
+                        elif list[4] == list[1] and list[1] == list[2] and list[3] == list[0]:
+                            a4i = list[4]
+                            a4ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[4] and list[1] == list[2]:
+                            a4i = list[0]
+                            a4ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[4] and list[2] == list[0]:
+                            a4i = list[3]
+                            a4ii = list[2]
+                            FH = FH + 1
+                        elif list[3] == list[4] and list[4] == list[2] and list[0] == list[1]:
+                            a4i = list[3]
+                            a4ii = list[1]
+                            FH = FH + 1
+                        # Evaluate for P5
+                        list[0] = df5.iloc[i * 4 + k - 1, 1]
+                        list[1] = df5.iloc[i * 4 + k - 1, 3]
+                        list[2] = df5.iloc[i * 4 + k - 1, 5]
+                        list[3] = df5.iloc[i * 4 + k - 1, 7]
+                        list[4] = df5.iloc[i * 4 + k - 1, 9]
+                        if list[0] == list[1] and list[1] == list[2] and list[3] == list[4]:
+                            a5i = list[0]
+                            a5ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[3] and list[2] == list[4]:
+                            a5i = list[0]
+                            a5ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[1] and list[1] == list[4] and list[3] == list[2]:
+                            a5i = list[0]
+                            a5ii = list[2]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[2] and list[1] == list[4]:
+                            a5i = list[0]
+                            a5ii = list[4]
+                            FH = FH + 1
+                        elif list[0] == list[4] and list[4] == list[2] and list[3] == list[1]:
+                            a5i = list[0]
+                            a5ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[2] and list[0] == list[4]:
+                            a5i = list[3]
+                            a5ii = list[4]
+                            FH = FH + 1
+                        elif list[4] == list[1] and list[1] == list[2] and list[3] == list[0]:
+                            a5i = list[4]
+                            a5ii = list[3]
+                            FH = FH + 1
+                        elif list[0] == list[3] and list[3] == list[4] and list[1] == list[2]:
+                            a5i = list[0]
+                            a5ii = list[1]
+                            FH = FH + 1
+                        elif list[3] == list[1] and list[1] == list[4] and list[2] == list[0]:
+                            a5i = list[3]
+                            a5ii = list[2]
+                            FH = FH + 1
+                        elif list[3] == list[4] and list[4] == list[2] and list[0] == list[1]:
+                            a5i = list[3]
+                            a5ii = list[1]
+                            FH = FH + 1
+                        #Evaluating for Full House
+                        if (FH > 1):
+                            b = max(a1i, a2i, a3i, a4i, a5i)
+                            c = 0
+                            if a1i == b:
+                                c = c + 1
+                            elif a2i == b:
+                                c = c + 1
+                            elif a3i == b:
+                                c = c + 1
+                            elif a4i == b:
+                                c = c + 1
+                            elif a5i == b:
+                                c = c + 1
+                            if c > 1:
+                                b = max(a1ii, a2ii, a3ii, a4ii, a5ii)
+                                if a1ii == b:
+                                    df1.iloc[i * 4 + k - 1, 14] = 1
+                                if a2ii == b:
+                                    df2.iloc[i * 4 + k - 1, 14] = 1
+                                if a3ii == b:
+                                    df3.iloc[i * 4 + k - 1, 14] = 1
+                                if a4ii == b:
+                                    df4.iloc[i * 4 + k - 1, 14] = 1
+                                if a5ii == b:
+                                    df5.iloc[i * 4 + k - 1, 14] = 1
+                            else:
+                                b = max(a1i, a2i, a3i, a4i, a5i)
+                                if a1i == b:
+                                    df1.iloc[i * 4 + k - 1, 14] = 1
+                                elif a2i == b:
+                                    df2.iloc[i * 4 + k - 1, 14] = 1
+                                elif a3i == b:
+                                    df3.iloc[i * 4 + k - 1, 14] = 1
+                                elif a4i == b:
+                                    df4.iloc[i * 4 + k - 1, 14] = 1
+                                elif a5i == b:
+                                    df5.iloc[i * 4 + k - 1, 14] = 1
+                        elif (FH == 1):
+                            b = max(a1i,a2i,a3i,a4i,a5i)
+                            if a1i == b:
+                                df1.iloc[i * 4 + k - 1, 14] = 1
+                            elif a2i == b:
+                                df2.iloc[i * 4 + k - 1, 14] = 1
+                            elif a3i == b:
+                                df3.iloc[i * 4 + k - 1, 14] = 1
+                            elif a4i == b:
+                                df4.iloc[i * 4 + k - 1, 14] = 1
+                            elif a5i == b:
+                                df5.iloc[i * 4 + k - 1, 14] = 1
+                        else:
+                            #Evaluate for Flush
+                            F = 0
+                            a1 = 0
+                            a2 = 0
+                            a3 = 0
+                            a4 = 0
+                            a5 = 0
+                            #Evaluate P1
+                            list[0] = df1.iloc[i * 4 + k - 1, 0]
+                            list[1] = df1.iloc[i * 4 + k - 1, 2]
+                            list[2] = df1.iloc[i * 4 + k - 1, 4]
+                            list[3] = df1.iloc[i * 4 + k - 1, 6]
+                            list[4] = df1.iloc[i * 4 + k - 1, 8]
+                            if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[4]:
+                                F = F + 1
+                                a1 = max(df1.iloc[i * 4 + k - 1, 1], df1.iloc[i * 4 + k - 1, 3], df1.iloc[i * 4 + k - 1, 5],
+                                            df1.iloc[i * 4 + k - 1, 7], df1.iloc[i * 4 + k - 1, 9])
+                            # Evaluate P2
+                            list[0] = df2.iloc[i * 4 + k - 1, 0]
+                            list[1] = df2.iloc[i * 4 + k - 1, 2]
+                            list[2] = df2.iloc[i * 4 + k - 1, 4]
+                            list[3] = df2.iloc[i * 4 + k - 1, 6]
+                            list[4] = df2.iloc[i * 4 + k - 1, 8]
+                            if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == list[
+                                4]:
+                                F = F + 1
+                                a2 = max(df2.iloc[i * 4 + k - 1, 1], df2.iloc[i * 4 + k - 1, 3], df2.iloc[i * 4 + k - 1, 5],
+                                            df2.iloc[i * 4 + k - 1, 7], df2.iloc[i * 4 + k - 1, 9])
+                            # Evaluate P3
+                            list[0] = df3.iloc[i * 4 + k - 1, 0]
+                            list[1] = df3.iloc[i * 4 + k - 1, 2]
+                            list[2] = df3.iloc[i * 4 + k - 1, 4]
+                            list[3] = df3.iloc[i * 4 + k - 1, 6]
+                            list[4] = df3.iloc[i * 4 + k - 1, 8]
+                            if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[3] == \
+                                    list[4]:
+                                F = F + 1
+                                a3 = max(df3.iloc[i * 4 + k - 1, 1], df3.iloc[i * 4 + k - 1, 3], df3.iloc[i * 4 + k - 1, 5],
+                                            df3.iloc[i * 4 + k - 1, 7], df3.iloc[i * 4 + k - 1, 9])
+                            # Evaluate P4
+                            list[0] = df4.iloc[i * 4 + k - 1, 0]
+                            list[1] = df4.iloc[i * 4 + k - 1, 2]
+                            list[2] = df4.iloc[i * 4 + k - 1, 4]
+                            list[3] = df4.iloc[i * 4 + k - 1, 6]
+                            list[4] = df4.iloc[i * 4 + k - 1, 8]
+                            if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and list[
+                                3] == list[4]:
+                                F = F + 1
+                                a4 = max(df4.iloc[i * 4 + k - 1, 1], df4.iloc[i * 4 + k - 1, 3], df4.iloc[i * 4 + k - 1, 5],
+                                            df4.iloc[i * 4 + k - 1, 7], df4.iloc[i * 4 + k - 1, 9])
+                            # Evaluate P5
+                            list[0] = df5.iloc[i * 4 + k - 1, 0]
+                            list[1] = df5.iloc[i * 4 + k - 1, 2]
+                            list[2] = df5.iloc[i * 4 + k - 1, 4]
+                            list[3] = df5.iloc[i * 4 + k - 1, 6]
+                            list[4] = df5.iloc[i * 4 + k - 1, 8]
+                            if list[0] == list[1] and list[1] == list[2] and list[2] == list[3] and \
+                                            list[3] == list[4]:
+                                F = F + 1
+                                a5 = max(df5.iloc[i * 4 + k - 1, 1], df5.iloc[i * 4 + k - 1, 3], df5.iloc[i * 4 + k - 1, 5],
+                                         df5.iloc[i * 4 + k - 1, 7], df5.iloc[i * 4 + k - 1, 9])
+                            if F > 0:
+                                b = max(a1i, a2i, a3i, a4i, a5i)
+                                if a1i == b:
+                                    df1.iloc[i * 4 + k - 1, 14] = 1
+                                elif a2i == b:
+                                    df2.iloc[i * 4 + k - 1, 14] = 1
+                                elif a3i == b:
+                                    df3.iloc[i * 4 + k - 1, 14] = 1
+                                elif a4i == b:
+                                    df4.iloc[i * 4 + k - 1, 14] = 1
+                                elif a5i == b:
+                                    df5.iloc[i * 4 + k - 1, 14] = 1
+                            else:
+                                #Check for Straight
+                                SF = 0
+                                a1 = 0
+                                a2 = 0
+                                a3 = 0
+                                a4 = 0
+                                a5 = 0
+                                # P1 Evaluation
+                                # With Ace Low
+                                list[0] = df1.iloc[i * 4 + k - 1, 1]
+                                list[1] = df1.iloc[i * 4 + k - 1, 3]
+                                list[2] = df1.iloc[i * 4 + k - 1, 5]
+                                list[3] = df1.iloc[i * 4 + k - 1, 7]
+                                list[4] = df1.iloc[i * 4 + k - 1, 9]
+                                for m in range(0, 5):
+                                    if list[m] == 14:
+                                        list[m] = 1
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a1 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # With Ace High
+                                for m in range(0, 5):
+                                    if list[m] == 1:
+                                        list[m] = 14
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a1 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # P2 Evaluation
+                                # With Ace Low
+                                list[0] = df2.iloc[i * 4 + k - 1, 1]
+                                list[1] = df2.iloc[i * 4 + k - 1, 3]
+                                list[2] = df2.iloc[i * 4 + k - 1, 5]
+                                list[3] = df2.iloc[i * 4 + k - 1, 7]
+                                list[4] = df2.iloc[i * 4 + k - 1, 9]
+                                for m in range(0, 5):
+                                    if list[m] == 14:
+                                        list[m] = 1
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[
+                                            4]:
+                                    a2 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # With Ace High
+                                for m in range(0, 5):
+                                    if list[m] == 1:
+                                        list[m] = 14
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a2 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # P3 Evaluation
+                                # With Ace Low
+                                list[0] = df3.iloc[i * 4 + k - 1, 1]
+                                list[1] = df3.iloc[i * 4 + k - 1, 3]
+                                list[2] = df3.iloc[i * 4 + k - 1, 5]
+                                list[3] = df3.iloc[i * 4 + k - 1, 7]
+                                list[4] = df3.iloc[i * 4 + k - 1, 9]
+                                for m in range(0, 5):
+                                    if list[m] == 14:
+                                        list[m] = 1
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == \
+                                                list[
+                                                    4]:
+                                    a3 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # With Ace High
+                                for m in range(0, 5):
+                                    if list[m] == 1:
+                                        list[m] = 14
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a3 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # P4 Evaluation
+                                # With Ace Low
+                                list[0] = df4.iloc[i * 4 + k - 1, 1]
+                                list[1] = df4.iloc[i * 4 + k - 1, 3]
+                                list[2] = df4.iloc[i * 4 + k - 1, 5]
+                                list[3] = df4.iloc[i * 4 + k - 1, 7]
+                                list[4] = df4.iloc[i * 4 + k - 1, 9]
+                                for m in range(0, 5):
+                                    if list[m] == 14:
+                                        list[m] = 1
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == \
+                                                list[4]:
+                                    a4 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # With Ace High
+                                for m in range(0, 5):
+                                    if list[m] == 1:
+                                        list[m] = 14
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a4 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # P5 Evaluation
+                                # With Ace Low
+                                list[0] = df5.iloc[i * 4 + k - 1, 1]
+                                list[1] = df5.iloc[i * 4 + k - 1, 3]
+                                list[2] = df5.iloc[i * 4 + k - 1, 5]
+                                list[3] = df5.iloc[i * 4 + k - 1, 7]
+                                list[4] = df5.iloc[i * 4 + k - 1, 9]
+                                for m in range(0, 5):
+                                    if list[m] == 14:
+                                        list[m] = 1
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == \
+                                                list[4]:
+                                    a5 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # With Ace High
+                                for m in range(0, 5):
+                                    if list[m] == 1:
+                                        list[m] = 14
+                                list = np.sort(list).tolist()
+                                if list[0] + 1 == list[1] and list[1] + 1 == list[2] and list[2] + 1 == list[3] and \
+                                                        list[3] + 1 == list[4]:
+                                    a5 = max(list[0], list[1], list[2], list[3], list[4])
+                                    SF = SF + 1
+                                # Check for Straight
+                                if (SF > 0):
+                                    b = max(a1, a2, a3, a4, a5)
+                                    if a1 == b:
+                                        df1.iloc[i * 4 + k - 1, 14] = 1
+                                    if a2 == b:
+                                        df2.iloc[i * 4 + k - 1, 14] = 1
+                                    if a3 == b:
+                                        df3.iloc[i * 4 + k - 1, 14] = 1
+                                    if a4 == b:
+                                        df4.iloc[i * 4 + k - 1, 14] = 1
+                                    if a5 == b:
+                                        df5.iloc[i * 4 + k - 1, 14] = 1
+                                else:
+                                    #Check for 3 of a kind
+                                    FH = 0
+                                    a1i = 0
+                                    a2i = 0
+                                    a3i = 0
+                                    a4i = 0
+                                    a5i = 0
+                                    # Evaluate for P1
+                                    list[0] = df1.iloc[i * 4 + k - 1, 1]
+                                    list[1] = df1.iloc[i * 4 + k - 1, 3]
+                                    list[2] = df1.iloc[i * 4 + k - 1, 5]
+                                    list[3] = df1.iloc[i * 4 + k - 1, 7]
+                                    list[4] = df1.iloc[i * 4 + k - 1, 9]
+                                    if list[0] == list[1] and list[1] == list[2]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[3]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[4]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[2]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[4] and list[4] == list[2]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[2]:
+                                        a1i = list[3]
+                                        FH = FH + 1
+                                    elif list[4] == list[1] and list[1] == list[2]:
+                                        a1i = list[4]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[4]:
+                                        a1i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[4]:
+                                        a1i = list[3]
+                                        FH = FH + 1
+                                    elif list[3] == list[4] and list[4] == list[2]:
+                                        a1i = list[3]
+                                        FH = FH + 1
+                                    # Evaluate for P2
+                                    list[0] = df2.iloc[i * 4 + k - 1, 1]
+                                    list[1] = df2.iloc[i * 4 + k - 1, 3]
+                                    list[2] = df2.iloc[i * 4 + k - 1, 5]
+                                    list[3] = df2.iloc[i * 4 + k - 1, 7]
+                                    list[4] = df2.iloc[i * 4 + k - 1, 9]
+                                    if list[0] == list[1] and list[1] == list[2]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[3]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[4]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[2]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[4] and list[4] == list[2]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[2]:
+                                        a2i = list[3]
+                                        FH = FH + 1
+                                    elif list[4] == list[1] and list[1] == list[2]:
+                                        a2i = list[4]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[4]:
+                                        a2i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[4]:
+                                        a2i = list[3]
+                                        FH = FH + 1
+                                    elif list[3] == list[4] and list[4] == list[2]:
+                                        a2i = list[3]
+                                        FH = FH + 1
+                                    # Evaluate for P3
+                                    list[0] = df3.iloc[i * 4 + k - 1, 1]
+                                    list[1] = df3.iloc[i * 4 + k - 1, 3]
+                                    list[2] = df3.iloc[i * 4 + k - 1, 5]
+                                    list[3] = df3.iloc[i * 4 + k - 1, 7]
+                                    list[4] = df3.iloc[i * 4 + k - 1, 9]
+                                    if list[0] == list[1] and list[1] == list[2]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[3]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[4]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[2]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[4] and list[4] == list[2]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[2]:
+                                        a3i = list[3]
+                                        FH = FH + 1
+                                    elif list[4] == list[1] and list[1] == list[2]:
+                                        a3i = list[4]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[4]:
+                                        a3i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[4]:
+                                        a3i = list[3]
+                                        FH = FH + 1
+                                    elif list[3] == list[4] and list[4] == list[2]:
+                                        a3i = list[3]
+                                        FH = FH + 1
+                                    # Evaluate for P4
+                                    list[0] = df4.iloc[i * 4 + k - 1, 1]
+                                    list[1] = df4.iloc[i * 4 + k - 1, 3]
+                                    list[2] = df4.iloc[i * 4 + k - 1, 5]
+                                    list[3] = df4.iloc[i * 4 + k - 1, 7]
+                                    list[4] = df4.iloc[i * 4 + k - 1, 9]
+                                    if list[0] == list[1] and list[1] == list[2]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[3]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[4]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[2]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[4] and list[4] == list[2]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[2]:
+                                        a4i = list[3]
+                                        FH = FH + 1
+                                    elif list[4] == list[1] and list[1] == list[2]:
+                                        a4i = list[4]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[4]:
+                                        a4i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[4]:
+                                        a4i = list[3]
+                                        FH = FH + 1
+                                    elif list[3] == list[4] and list[4] == list[2]:
+                                        a4i = list[3]
+                                        FH = FH + 1
+                                    # Evaluate for P5
+                                    list[0] = df5.iloc[i * 4 + k - 1, 1]
+                                    list[1] = df5.iloc[i * 4 + k - 1, 3]
+                                    list[2] = df5.iloc[i * 4 + k - 1, 5]
+                                    list[3] = df5.iloc[i * 4 + k - 1, 7]
+                                    list[4] = df5.iloc[i * 4 + k - 1, 9]
+                                    if list[0] == list[1] and list[1] == list[2]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[3]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[1] and list[1] == list[4]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[2]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[0] == list[4] and list[4] == list[2]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[2]:
+                                        a5i = list[3]
+                                        FH = FH + 1
+                                    elif list[4] == list[1] and list[1]:
+                                        a5i = list[4]
+                                        FH = FH + 1
+                                    elif list[0] == list[3] and list[3] == list[4]:
+                                        a5i = list[0]
+                                        FH = FH + 1
+                                    elif list[3] == list[1] and list[1] == list[4]:
+                                        a5i = list[3]
+                                        FH = FH + 1
+                                    elif list[3] == list[4] and list[4] == list[2]:
+                                        a5i = list[3]
+                                        FH = FH + 1
+                                    # Evaluating for 3 of a kind
+                                    if (FH > 0):
+                                        b = max(a1i, a2i, a3i, a4i, a5i)
+                                        if a1i == b:
+                                            df1.iloc[i * 4 + k - 1, 14] = 1
+                                        elif a2i == b:
+                                            df2.iloc[i * 4 + k - 1, 14] = 1
+                                        elif a3i == b:
+                                            df3.iloc[i * 4 + k - 1, 14] = 1
+                                        elif a4i == b:
+                                            df4.iloc[i * 4 + k - 1, 14] = 1
+                                        elif a5i == b:
+                                            df5.iloc[i * 4 + k - 1, 14] = 1
+                                    else:
+                                        #Evaluate for two pair and one pair
+                                        f1 = [0]
+                                        f2 = [0]
+                                        f3 = [0]
+                                        f4 = [0]
+                                        f5 = [0]
+                                        a1 = [0]
+                                        a2 = [0]
+                                        a3 = [0]
+                                        a4 = [0]
+                                        a5 = [0]
+                                        Fin = 0
+                                        # Evaluate P1
+                                        TP1 = 0
+                                        list[0] = df1.iloc[i * 4 + k - 1, 1]
+                                        list[1] = df1.iloc[i * 4 + k - 1, 3]
+                                        list[2] = df1.iloc[i * 4 + k - 1, 5]
+                                        list[3] = df1.iloc[i * 4 + k - 1, 7]
+                                        list[4] = df1.iloc[i * 4 + k - 1, 9]
+                                        if (list[0] == list[1] or list[0] == list[2] or list[0] == list[3] or list[
+                                            0] == list[4]):
+                                            TP1 = TP1 + 1
+                                            f1.append(list[0])
+                                        if (list[1] == list[2] or list[1] == list[3] or list[1] == list[4]):
+                                            TP1 = TP1 + 1
+                                            f1.append(list[1])
+                                        if (list[2] == list[3] or list[2] == list[4]):
+                                            TP1 = TP1 + 1
+                                            f1.append(list[2])
+                                        if (list[3] == list[4]):
+                                            TP1 = TP1 + 1
+                                            f1.append(list[3])
+                                        if TP1 > 1:
+                                            f1 = np.sort(f1[::-1]).tolist()
+                                            a1.append(f1[0])
+                                            a1.append(f1[1])
+                                            Fin = Fin + 1
+                                        # Evaluate P2
+                                        TP2 = 0
+                                        list[0] = df2.iloc[i * 4 + k - 1, 1]
+                                        list[1] = df2.iloc[i * 4 + k - 1, 3]
+                                        list[2] = df2.iloc[i * 4 + k - 1, 5]
+                                        list[3] = df2.iloc[i * 4 + k - 1, 7]
+                                        list[4] = df2.iloc[i * 4 + k - 1, 9]
+                                        if (list[0] == list[1] or list[0] == list[2] or list[0] == list[3] or
+                                                    list[0] == list[4]):
+                                            TP2 = TP2 + 1
+                                            f2.append(list[0])
+                                        if (list[1] == list[2] or list[1] == list[3] or list[1] == list[4]):
+                                            TP2 = TP2 + 1
+                                            f2.append(list[1])
+                                        if (list[2] == list[3] or list[2] == list[4]):
+                                            TP2 = TP2 + 1
+                                            f2.append(list[2])
+                                        if (list[3] == list[4]):
+                                            TP2 = TP2 + 1
+                                            f2.append(list[3])
+                                        if TP2 > 1:
+                                            f2 = np.sort(f2[::-1]).tolist()
+                                            a2.append(f2[0])
+                                            a2.append(f2[1])
+                                            Fin = Fin + 1
+                                        # Evaluate P3
+                                        TP3 = 0
+                                        list[0] = df3.iloc[i * 4 + k - 1, 1]
+                                        list[1] = df3.iloc[i * 4 + k - 1, 3]
+                                        list[2] = df3.iloc[i * 4 + k - 1, 5]
+                                        list[3] = df3.iloc[i * 4 + k - 1, 7]
+                                        list[4] = df3.iloc[i * 4 + k - 1, 9]
+                                        if (list[0] == list[1] or list[0] == list[2] or list[0] == list[
+                                            3] or list[0] == list[4]):
+                                            TP3 = TP3 + 1
+                                            f3.append(list[0])
+                                        if (list[1] == list[2] or list[1] == list[3] or list[1] == list[4]):
+                                            TP3 = TP3 + 1
+                                            f3.append(list[1])
+                                        if (list[2] == list[3] or list[2] == list[4]):
+                                            TP3 = TP3 + 1
+                                            f3.append(list[2])
+                                        if (list[3] == list[4]):
+                                            TP3 = TP3 + 1
+                                            f3.append(list[3])
+                                        if TP3 > 1:
+                                            f3 = np.sort(f3[::-1]).tolist()
+                                            a3.append(f3[0])
+                                            a3.append(f3[1])
+                                            Fin = Fin + 1
+                                        # Evaluate P4
+                                        TP4 = 0
+                                        list[0] = df4.iloc[i * 4 + k - 1, 1]
+                                        list[1] = df4.iloc[i * 4 + k - 1, 3]
+                                        list[2] = df4.iloc[i * 4 + k - 1, 5]
+                                        list[3] = df4.iloc[i * 4 + k - 1, 7]
+                                        list[4] = df4.iloc[i * 4 + k - 1, 9]
+                                        if (list[0] == list[1] or list[0] == list[2] or list[0] == list[
+                                            3] or list[0] == list[4]):
+                                            TP4 = TP4 + 1
+                                            f4.append(list[0])
+                                        if (list[1] == list[2] or list[1] == list[3] or list[1] == list[
+                                            4]):
+                                            TP4 = TP4 + 1
+                                            f4.append(list[1])
+                                        if (list[2] == list[3] or list[2] == list[4]):
+                                            TP4 = TP4 + 1
+                                            f4.append(list[2])
+                                        if (list[3] == list[4]):
+                                            TP4 = TP4 + 1
+                                            f4.append(list[3])
+                                        if TP4 > 1:
+                                            f4 = np.sort(f4[::-1]).tolist()
+                                            a4.append(f4[0])
+                                            a4.append(f4[1])
+                                            Fin = Fin + 1
+                                        # Evaluate P5
+                                        TP5 = 0
+                                        list[0] = df5.iloc[i * 4 + k - 1, 1]
+                                        list[1] = df5.iloc[i * 4 + k - 1, 3]
+                                        list[2] = df5.iloc[i * 4 + k - 1, 5]
+                                        list[3] = df5.iloc[i * 4 + k - 1, 7]
+                                        list[4] = df5.iloc[i * 4 + k - 1, 9]
+                                        if (list[0] == list[1] or list[0] == list[2] or list[0] ==
+                                            list[3] or list[0] == list[4]):
+                                            TP5 = TP5 + 1
+                                            f5.append(list[0])
+                                        if (list[1] == list[2] or list[1] == list[3] or list[1] ==
+                                            list[4]):
+                                            TP5 = TP5 + 1
+                                            f5.append(list[1])
+                                        if (list[2] == list[3] or list[2] == list[4]):
+                                            TP5 = TP5 + 1
+                                            f5.append(list[2])
+                                        if (list[3] == list[4]):
+                                            TP5 = TP5 + 1
+                                            f5.append(list[3])
+                                        if TP5 > 1:
+                                            f5 = np.sort(f5[::-1]).tolist()
+                                            a5.append(f5[0])
+                                            a5.append(f5[1])
+                                            Fin = Fin + 1
+                                        #Check for two pair
+                                        if Fin > 0:
+                                            b = max(max(a1),max(a2),max(a3),max(a4),max(a5))
+                                            if max(a1) == b:
+                                                df1.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(a2) == b:
+                                                df2.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(a3) == b:
+                                                df3.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(a4) == b:
+                                                df4.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(a5) == b:
+                                                df5.iloc[i * 4 + k - 1, 14] = 1
+                                        #Check for pair
+                                        elif TP1+TP2+TP3+TP4+TP5 > 0:
+                                            b = max(max(f1),max(f2),max(f3),max(f4),max(f5))
+                                            if max(f1) == b:
+                                                df1.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(f2) == b:
+                                                df2.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(f3) == b:
+                                                df3.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(f4) == b:
+                                                df4.iloc[i * 4 + k - 1, 14] = 1
+                                            elif max(f5) == b:
+                                                df5.iloc[i * 4 + k - 1, 14] = 1
+                                        else:
+                                            #Find the high card
+                                            winner = max(df1.iloc[i * 4 + k - 1, 1], df1.iloc[i * 4 + k - 1, 3],
+                                                         df2.iloc[i * 4 + k - 1, 1], df2.iloc[i * 4 + k - 1, 3],
+                                                         df3.iloc[i * 4 + k - 1, 1], df3.iloc[i * 4 + k - 1, 3],
+                                                         df4.iloc[i * 4 + k - 1, 1], df4.iloc[i * 4 + k - 1, 3],
+                                                         df5.iloc[i * 4 + k - 1, 1], df5.iloc[i * 4 + k - 1, 3], )
+                                            if df1.iloc[i * 4 + k - 1, 1] == winner or df1.iloc[
+                                                                        i * 4 + k - 1, 3] == winner:
+                                                df1.iloc[i * 4 + k - 1, 14] = 1
+                                            if df2.iloc[i * 4 + k - 1, 1] == winner or df2.iloc[
+                                                                        i * 4 + k - 1, 3] == winner:
+                                                df2.iloc[i * 4 + k - 1, 14] = 1
+                                            if df3.iloc[i * 4 + k - 1, 1] == winner or df3.iloc[
+                                                                        i * 4 + k - 1, 3] == winner:
+                                                df3.iloc[i * 4 + k - 1, 14] = 1
+                                            if df4.iloc[i * 4 + k - 1, 1] == winner or df4.iloc[
+                                                                        i * 4 + k - 1, 3] == winner:
+                                                df4.iloc[i * 4 + k - 1, 14] = 1
+                                            if df5.iloc[i * 4 + k - 1, 1] == winner or df5.iloc[
+                                                                        i * 4 + k - 1, 3] == winner:
+                                                df5.iloc[i * 4 + k - 1, 14] = 1
 
-
-
-
-
+            # Create Turn Round
             if k == 3:
-                #Create Turn Round
                 df1.loc[i * 4 + k - 1] = df1.loc[i * 4 + k - 2]
                 df2.loc[i * 4 + k - 1] = df2.loc[i * 4 + k - 2]
                 df3.loc[i * 4 + k - 1] = df3.loc[i * 4 + k - 2]
